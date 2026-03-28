@@ -1,113 +1,146 @@
-## Технологический стек
-- .NET 8.0 (Web API)
-- Entity Framework Core 8.0
-- PostgreSQL / SQLite
-- Docker & Docker Compose
-- xUnit (тестирование)
+# Roll Storage API
 
-## Запуск проекта
+A REST API for managing industrial rolls, built with **C#**, **.NET 8.0**, and **ASP.NET Core Web API**.  
+The project uses **Entity Framework Core 8.0** with **PostgreSQL** and **SQLite**, and is containerized with **Docker & Docker Compose**.  
+Unit tests are written with **xUnit**.
 
-### Через Docker 
-1. Перейдите в корневую директорию проекта
-2. Запустите проект:
+***
+
+## Technologies & Stack
+
+- **.NET 8.0** (Web API)  
+- **Entity Framework Core 8.0**  
+- **PostgreSQL** and **SQLite**  
+- **Docker & Docker Compose** (for containers)  
+- **xUnit** (unit and integration tests)
+
+***
+
+## Running the Project
+
+### With Docker (recommended)
+
+1. Go to the project root directory.
+2. Run:
+   ```bash
+   docker-compose up --build
+   ```
+3. The API will be available at:  
+   `http://localhost:8080`  
+4. The PostgreSQL database will be available at:  
+   `localhost:5432`
+
+***
+
+### Locally with SQLite
+
+1. Install **.NET SDK 8.0**.  
+2. Go to the API folder:
+   ```bash
+   cd src/API
+   ```
+3. Run:
+   ```bash
+   dotnet run
+   ```
+4. The API will be available at:  
+   `http://localhost:5000`
+
+By default, the project uses **SQLite** with a local database file `RollStorage.db`.
+
+***
+
+### Locally with PostgreSQL
+
+1. Install **PostgreSQL** and run the server.  
+2. Configure the connection string in `appsettings.json`:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Host=localhost;Database=rollsdb;Username=postgres;Password=your_password"
+     }
+   }
+   ```
+3. Go to the API folder:
+   ```bash
+   cd src/API
+   ```
+4. Run:
+   ```bash
+   dotnet run
+   ```
+
+***
+
+## Environment Variables (Container Configuration)
+
+You can configure the database connection through environment variables:
 
 ```bash
-docker-compose up --build
+export ConnectionStrings__DefaultConnection="Host=postgres;Database=rollsdb;Username=postgres;Password=postgres"
 ```
 
-API будет доступен по адресу: `http://localhost:8080`
+In Docker, this is set inside `docker-compose.yml`.
 
-База данных PostgreSQL будет доступна по адресу: `localhost:5432`
+***
 
-### Локально с SQLite
+## API Endpoints
 
-1. Установите .NET SDK 8.0
-2. Перейдите в директорию API:
-```bash
-cd src/API
-```
-3. Запустите проект:
-```bash
-dotnet run
-```
+### Add a roll
 
-API будет доступен по адресу: `http://localhost:5000`
+`POST /api/rolls`  
+Content-Type: `application/json`
 
-### Локально с PostgreSQL
-
-1. Установите PostgreSQL
-2. Настройте connection string в `appsettings.json`:
 ```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=rollsdb;Username=postgres;Password=your_password"
-  }
-}
-```
-3. Запустите проект:
-```bash
-cd src/API
-dotnet run
-```
-
-## Запуск тестов
-
-```bash
-cd WebApplication1.Tests
-dotnet test
-```
-
-## API
-
-### Добавление рулона
-```http
-POST /api/rolls
-Content-Type: application/json
-
 {
   "length": 100.5,
   "weight": 50.25
 }
 ```
 
-### Удаление рулона
-```http
-DELETE /api/rolls/{id}
-```
+***
 
-### Получение списка рулонов
-```http
-GET /api/rolls
-```
+### Delete a roll
 
-С фильтрацией:
-```http
-GET /api/rolls?weight.min=10&weight.max=100&length.min=50&addTime.from=2024-01-01&addTime.to=2024-12-31
-```
+`DELETE /api/rolls/{id}`
 
-### Получение статистики
-```http
-POST /api/rolls/statistics
-Content-Type: application/json
+***
 
+### Get list of rolls
+
+`GET /api/rolls`
+
+With filters:  
+`GET /api/rolls?weight.min=10&weight.max=100&length.min=50&addTime.from=2024-01-01&addTime.to=2024-12-31`
+
+***
+
+### Get statistics
+
+`POST /api/rolls/statistics`  
+Content-Type: `application/json`
+
+```json
 {
   "from": "2024-01-01T00:00:00Z",
   "to": "2024-12-31T23:59:59Z"
 }
 ```
 
-## Настройка через ENV переменные
+***
 
-Вы можете настроить подключение к БД через переменные окружения:
+## Running Tests
 
 ```bash
-export ConnectionStrings__DefaultConnection="Host=postgres;Database=rollsdb;Username=postgres;Password=postgres"
+cd WebApplication1.Tests
+dotnet test
 ```
 
-В Docker это настраивается в `docker-compose.yml`.
+***
 
-## Локальная разработка
+## Local Development Setup
 
-Для локальной разработки с SQLite (по умолчанию) используется файл базы данных `RollStorage.db`.
+- For local development with **SQLite** (the default) the project uses the file `RollStorage.db`.  
+- To switch to **PostgreSQL**, edit the `ConnectionStrings:DefaultConnection` in `appsettings.json` or set the corresponding environment variable.
 
-Для использования PostgreSQL измените connection string в `appsettings.json` или через ENV переменные.
+***
