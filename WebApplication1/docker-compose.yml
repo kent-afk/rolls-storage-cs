@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: roll-warehouse-db
+    environment:
+      POSTGRES_DB: rollwarehouse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Web API application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: roll-warehouse-api
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=rollwarehouse;Username=postgres;Password=postgres
+      - DatabaseProvider=postgresql
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

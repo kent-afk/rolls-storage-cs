@@ -1,0 +1,51 @@
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+.idea/
+*.swp
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Test results
+TestResults/
+coverage/
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# Secrets
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
